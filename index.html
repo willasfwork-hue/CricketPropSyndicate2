@@ -215,13 +215,13 @@ tbody td{padding:9px 12px;white-space:nowrap;}
     <div id="whoSection">
       <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;">Select your profile</div>
       <div class="who-grid">
-        <button class="who-btn" data-who="ADMIN"><div class="who-av">AD</div><div class="who-label">ADMIN <span class="admin-chip">ADMIN</span></div><div class="who-role">Full Access</div></button>
-        <button class="who-btn" data-who="LC"><div class="who-av">LC</div><div class="who-label">LC</div><div class="who-role">Member</div></button>
-        <button class="who-btn" data-who="COD"><div class="who-av">COD</div><div class="who-label">COD</div><div class="who-role">Member</div></button>
-        <button class="who-btn" data-who="MFB"><div class="who-av">MFB</div><div class="who-label">MFB</div><div class="who-role">Member</div></button>
-        <button class="who-btn" data-who="MD"><div class="who-av">MD</div><div class="who-label">MD</div><div class="who-role">Member</div></button>
-        <button class="who-btn" data-who="AR"><div class="who-av">AR</div><div class="who-label">AR</div><div class="who-role">Member</div></button>
-        <button class="who-btn" data-who="LH"><div class="who-av">LH</div><div class="who-label">LH</div><div class="who-role">Member</div></button>
+        <button class="who-btn" onclick="selectUser('ADMIN')"><div class="who-av">AD</div><div class="who-label">ADMIN <span class="admin-chip">ADMIN</span></div><div class="who-role">Full Access</div></button>
+        <button class="who-btn" onclick="selectUser('LC')"><div class="who-av">LC</div><div class="who-label">LC</div><div class="who-role">Member</div></button>
+        <button class="who-btn" onclick="selectUser('COD')"><div class="who-av">COD</div><div class="who-label">COD</div><div class="who-role">Member</div></button>
+        <button class="who-btn" onclick="selectUser('MFB')"><div class="who-av">MFB</div><div class="who-label">MFB</div><div class="who-role">Member</div></button>
+        <button class="who-btn" onclick="selectUser('MD')"><div class="who-av">MD</div><div class="who-label">MD</div><div class="who-role">Member</div></button>
+        <button class="who-btn" onclick="selectUser('AR')"><div class="who-av">AR</div><div class="who-label">AR</div><div class="who-role">Member</div></button>
+        <button class="who-btn" onclick="selectUser('LH')"><div class="who-av">LH</div><div class="who-label">LH</div><div class="who-role">Member</div></button>
       </div>
     </div>
     <div id="pinSection" style="display:none">
@@ -232,12 +232,12 @@ tbody td{padding:9px 12px;white-space:nowrap;}
           <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
         </div>
         <div class="pinpad">
-          <button class="pin-key" data-k="1">1</button><button class="pin-key" data-k="2">2</button><button class="pin-key" data-k="3">3</button>
-          <button class="pin-key" data-k="4">4</button><button class="pin-key" data-k="5">5</button><button class="pin-key" data-k="6">6</button>
-          <button class="pin-key" data-k="7">7</button><button class="pin-key" data-k="8">8</button><button class="pin-key" data-k="9">9</button>
-          <button class="pin-key btn-secondary" data-k="back" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">←</button>
-          <button class="pin-key" data-k="0">0</button>
-          <button class="pin-key del" data-k="clear" style="font-size:10px;font-family:'DM Mono',monospace">CLR</button>
+          <button class="pin-key" onclick="pinKey('1')">1</button><button class="pin-key" onclick="pinKey('2')">2</button><button class="pin-key" onclick="pinKey('3')">3</button>
+          <button class="pin-key" onclick="pinKey('4')">4</button><button class="pin-key" onclick="pinKey('5')">5</button><button class="pin-key" onclick="pinKey('6')">6</button>
+          <button class="pin-key" onclick="pinKey('7')">7</button><button class="pin-key" onclick="pinKey('8')">8</button><button class="pin-key" onclick="pinKey('9')">9</button>
+          <button class="pin-key" onclick="pinKey('back')" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">←</button>
+          <button class="pin-key" onclick="pinKey('0')">0</button>
+          <button class="pin-key del" onclick="pinKey('clear')" style="font-size:10px;font-family:'DM Mono',monospace">CLR</button>
         </div>
         <div class="lock-error" id="pinError"></div>
         <button class="btn btn-secondary btn-sm" onclick="backToWho()" style="margin-top:14px;width:100%">← Back</button>
@@ -737,34 +737,30 @@ let currentMemberId = null;
 let selectedUser = null;
 let pinEntry = '';
 
-document.addEventListener('DOMContentLoaded', function() {
-
 // ─── PIN LOGIC ────────────────────────────────────────────────
-document.querySelectorAll('[data-who]').forEach(btn => {
-  btn.onclick = () => {
-    selectedUser = btn.dataset.who;
-    document.querySelectorAll('[data-who]').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    document.getElementById('whoSection').style.display = 'none';
-    document.getElementById('pinSection').style.display = 'block';
-    document.getElementById('pinUserLabel').textContent = `PIN for ${selectedUser}`;
-    pinEntry = '';
-    updatePinDots();
-  };
-});
+function selectUser(who) {
+  selectedUser = who;
+  document.querySelectorAll('.who-btn').forEach(b => b.classList.remove('selected'));
+  // find the clicked button and highlight it
+  document.querySelectorAll('.who-btn').forEach(b => {
+    if (b.getAttribute('onclick') === "selectUser('" + who + "')") b.classList.add('selected');
+  });
+  document.getElementById('whoSection').style.display = 'none';
+  document.getElementById('pinSection').style.display = 'block';
+  document.getElementById('pinUserLabel').textContent = 'PIN for ' + selectedUser;
+  pinEntry = '';
+  updatePinDots();
+}
 
-document.querySelectorAll('[data-k]').forEach(btn => {
-  btn.onclick = () => {
-    const k = btn.dataset.k;
-    if (k === 'back' && pinEntry.length > 0) { pinEntry = pinEntry.slice(0, -1); updatePinDots(); }
-    else if (k === 'clear') { pinEntry = ''; updatePinDots(); }
-    else if (k !== 'back' && pinEntry.length < 4) {
-      pinEntry += k;
-      updatePinDots();
-      if (pinEntry.length === 4) setTimeout(tryLogin, 150);
-    }
-  };
-});
+function pinKey(k) {
+  if (k === 'back' && pinEntry.length > 0) { pinEntry = pinEntry.slice(0, -1); updatePinDots(); }
+  else if (k === 'clear') { pinEntry = ''; updatePinDots(); }
+  else if (k !== 'back' && pinEntry.length < 4) {
+    pinEntry += k;
+    updatePinDots();
+    if (pinEntry.length === 4) setTimeout(tryLogin, 150);
+  }
+}
 
 function updatePinDots() {
   for (let i = 0; i < 4; i++) {
@@ -808,7 +804,7 @@ function backToWho() {
   selectedUser = null;
   document.getElementById('pinSection').style.display = 'none';
   document.getElementById('whoSection').style.display = 'block';
-  document.querySelectorAll('[data-who]').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.who-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('pinError').textContent = '';
 }
 
@@ -818,7 +814,7 @@ function signOut() {
   document.getElementById('lockScreen').style.display = 'flex';
   document.getElementById('pinSection').style.display = 'none';
   document.getElementById('whoSection').style.display = 'block';
-  document.querySelectorAll('[data-who]').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.who-btn').forEach(b => b.classList.remove('selected'));
 }
 
 // ─── ROLE ─────────────────────────────────────────────────────
@@ -1673,8 +1669,6 @@ function initDashboard() {
 // Modal close on backdrop click
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-
-}); // end DOMContentLoaded
 
 </script>
 </body>
